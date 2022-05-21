@@ -1,4 +1,5 @@
-import { Card, Row, Col, Checkbox } from "antd"
+import { Card, Row, Col, Checkbox, Empty, Button, Tooltip } from "antd"
+import { CloseOutlined } from '@ant-design/icons';
 import { useState } from "react"
 import './Todo.css'
 
@@ -69,6 +70,15 @@ function Todo(props) {
       setActiveKey(key)
     }
 
+    const deleteTodo = todo => {
+        const newTodos = {...contents}
+        for (const key in newTodos) {
+            const updateTodos = newTodos[key].filter(arr => arr.id !== todo.id)
+            newTodos[key] = updateTodos
+        }
+        props.checkTodo(newTodos)
+    }
+
     return (
         <Card 
             tabList={tabList}
@@ -79,17 +89,29 @@ function Todo(props) {
             }
             }
         >
-            <Row gutter={[0, 8]}>
+            <Row gutter={[0, 8]} justify="center">
                 {contents[activeKey].map((content, index) => {
                     return (
                             <Col key={index} className="card__todo" span={24}>
-                                <Checkbox checked={content.check} onChange={(e) => {
-                                content.check = e.target.checked
-                                changeCheck(content)
-                                }} style={{textDecoration: (content.check) ? 'line-through' : 'none'}}>{content.title}</Checkbox>
+                                <div className="todo__item">
+                                    <Checkbox checked={content.check} onChange={(e) => {
+                                    content.check = e.target.checked
+                                    changeCheck(content)
+                                    }} style={{textDecoration: (content.check) ? 'line-through' : 'none'}}>{content.title}</Checkbox>
+                                    <Tooltip title="Delete task">
+                                        <Button type="primary" size="small" danger icon={<CloseOutlined />} onClick={(e) => deleteTodo(content)}/>
+                                    </Tooltip>
+                                </div>
                             </Col>
                     )
                 })}
+                {!contents[activeKey].length > 0 &&
+                    <Empty
+                        description={
+                            <span>There is no task in {activeKey}</span>
+                        } 
+                    />
+                }
             </Row>
         </Card>
     )

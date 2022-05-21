@@ -14,7 +14,7 @@ function App() {
   const addTodo = form => {
     const newTodos = {...contents}
     const newTodo = {
-      id: Math.max(...contents.all.map(todo => todo.id)) + 1,
+      id: (contents.all.length > 0 ) ? Math.max(...contents.all.map(todo => todo.id)) + 1 : 1,
       check: false,
       title: form.todo
     }
